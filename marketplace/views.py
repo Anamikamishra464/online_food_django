@@ -13,6 +13,7 @@ from orders.forms import OrderForm
 from accounts.models import UserProfile
 
 
+
 # Create your views here.
 def marketplace(request):
     vendors=Vendor.objects.filter(is_approved=True,user__is_active=True)
@@ -175,3 +176,20 @@ def checkout(request):
         'cart_count':cart_count, 
     }
     return render(request,'marketplace/checkout.html',context)
+
+
+def food_detail(request, vendor_slug, food_slug):
+    vendor = get_object_or_404(Vendor, vendor_slug=vendor_slug)
+    food = get_object_or_404(FoodItem, vendor=vendor, slug=food_slug)
+    related_foods = FoodItem.objects.filter(vendor=vendor,category=food.category).exclude(id=food.id)[:4]
+
+    context = {
+        'vendor': vendor,
+        'food': food,
+        'related_foods': related_foods,
+    }
+    return render(request, 'marketplace/food_detail.html', context)
+
+
+
+    

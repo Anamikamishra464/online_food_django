@@ -16,25 +16,26 @@ class Vendor(models.Model):
     def __str__(self):
         return self.vendor_name
     
+  
+
     def is_open(self):
-    #check current day's ordering hours 
-        today_date=date.today()
-        today=today_date.isoweekday()
-    
-        current_opening_hours=OpeningHour.objects.filter(vendor=self,day=today)
-        now= datetime.now()
-        current_time=now.strftime("%H:%M:%S")
-        is_open=None
-        for i in current_opening_hours:
-            if not i.is_closed:
-                start= str(datetime.strptime(i.from_hour,"%I:%M %p").time())
-                end= str(datetime.strptime(i.to_hour, "%I:%M %p").time())
-                if current_time > start and current_time<end:
-                    is_open=True
-                    break 
-                else:
-                    is_open=False
-            return is_open
+        today = date.today().isoweekday()
+        opening_hours = OpeningHour.objects.filter(vendor=self, day=today)
+
+        now = datetime.now().time()
+        is_open = False
+
+        for slot in opening_hours:
+            if not slot.is_closed:
+                start = datetime.strptime(slot.from_hour, "%I:%M %p").time()
+                end = datetime.strptime(slot.to_hour, "%I:%M %p").time()
+
+                if start <= now <= end:
+                    is_open = True
+                    break
+
+        return is_open
+
     
 
     def save(self,*args,**kwargs):

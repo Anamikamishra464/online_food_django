@@ -9,7 +9,12 @@ from django.http import HttpResponse,JsonResponse
 from .models import Payment,OrderedFood
 from menu.models import FoodItem
 from vendor.models import Vendor
+import stripe
+from django.conf import settings
+from marketplace.models import Cart
 
+
+stripe.api_key=settings.STRIPE_API_KEY
 
 # Create your views here.
 def place_order(request):
@@ -155,4 +160,57 @@ def order_complete(request):
     except:
         return redirect('home')
 
+def create_checkout_session(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
 
+    cart_items = Cart.objects.filter(user=request.user)
+    if not cart_items.exists():
+        return redirect('cart')
+
+    # get existing tax + totals
+    cart_amounts = get_cart_amounts(request)
+    grand_total = cart_amounts['grand_total']
+
+    # Get latest un-ordered order
+    order = Order.objects.filter(user=request.user, is_ordered=False).last()
+
+    checkout_session = stripe.checkout.Session.create(
+        payment_method_types=['card'],
+        line_items=[
+            {
+                'price_data': {
+                    'currency': 'usd',
+                    'product_data': {
+                        'name': 'Food Order Payment',
+                    },
+                    'unit_amount': int(grand_total * 100),
+                },
+                'quantity': 1,
+            }
+        ],
+        mode='payment',
+
+        # Store order_number for redirect after payment
+        metadata={
+            "order_number": order.order_number
+        },
+
+        success_url=request.build_absolute_uri('/payments/'),
+        cancel_url=request.build_absolute_uri('/payment-cancel/'),
+        customer_email=request.user.email if request.user.email else None,
+    )
+
+    return redirect(checkout_session.url)
+
+
+
+
+
+def payment_success(request):
+    # Optional: Move cart items to Order model
+    Cart.objects.filter(user=request.user).delete()
+    return render(request, 'payment_success.html')
+
+def payment_cancel(request):
+    return render(request, 'payment_cancel.html')

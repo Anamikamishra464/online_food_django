@@ -76,6 +76,7 @@ TEMPLATES = [
                 'marketplace.context_processor.get_cart_amounts',
                 'accounts.context_processor.get_user_profile',
                 'accounts.context_processor.get_paypal_client_id',
+                'accounts.context_processor.get_stripe_keys',
 
             ],
         },
@@ -179,3 +180,6 @@ GOOGLE_API_KEY = config('GOOGLE_API_KEY')
 PAYPAL_CLIENT_ID = config('PAYPAL_CLIENT_ID')
 
 SECURE_CROSS_ORIGIN_OPENER_POLICY='same-origin-allow-popups '
+
+STRIPE_API_KEY = config('STRIPE_API_KEY')
+STRIPE_PUBLISHABLE_KEY = config('STRIPE_PUBLISHABLE_KEY')

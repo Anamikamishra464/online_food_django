@@ -12,10 +12,10 @@
 						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
 							<div class="element-title">
 								<h1 style="font-size: 40px; color: #505050; text-transform: uppercase; line-height: 50px; margin-bottom: 25px; text-align:center;">
-									We are in the business of food<br>our restaurants do</h1>
+									Order Anytime, Enjoy Every Time</h1>
+									
 								<p style="font-size: 18px; letter-spacing: 1px; color: #505050; text-align:center;">
-									Ridiculus sociosqu
-									cursus neque cursus curae ante scelerisque vehicula.</p>
+									Browse our menu, place your order online, and enjoy seamless delivery.<br> Simple, satisfying, and made just for you.</p>
 							</div>
 						</div>
 						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
@@ -92,11 +92,12 @@
 								<li class="has-border">
 									<figure>
 										{% if vendor.user_profile.profile_picture %}
-											<a href="#">
+											<a href="{% url 'vendor_detail' vendor.vendor_slug %}">
+
 												<img src="{{ vendor.user_profile.profile_picture.url }}"height="125" class="attachment-full size-full wp-post-image" alt="">
 											</a>
 										{% else %}
-											<a href="#">
+											<a href="{% url 'vendor_detail' vendor.vendor_slug %}">
 												<img src="{% static 'images/default-profile.png' %}"height="125" class="attachment-full size-full wp-post-image" alt="">
 											</a>
 										{% endif %}
@@ -118,7 +119,7 @@
 						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 							<div class="element-title align-center">
 								<h2>Choose From Most Popular Restaurants</h2>
-								<p>Cum doctus civibus efficiantur in imperdiet deterruisset.</p>
+								<p>Indulge in flavors that delight where quality, convenience, and taste come together seamlessly.</p>
 							</div>
 						</div>
 						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -153,7 +154,9 @@
 		
 												<div class="post-title">
 													<h5>
-														<a href="listing-detail.html">{{vendor}}</a>
+														{% comment %} <a href="listing-detail.html">{{vendor}}</a> {% endcomment %}
+														<a href="{% url 'vendor_detail' vendor.vendor_slug %}">{{ vendor.vendor_name }}</a>
+
 														
 													</h5>
 												</div>

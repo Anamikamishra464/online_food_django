@@ -22,3 +22,10 @@ def get_google_api(request):
 
 def get_paypal_client_id(request):
     return {'PAYPAL_CLIENT_ID':settings.PAYPAL_CLIENT_ID}
+
+def get_stripe_keys(request):
+    return {
+        'STRIPE_API_KEY': settings.STRIPE_API_KEY,
+        'STRIPE_PUBLISHABLE_KEY': settings.STRIPE_PUBLISHABLE_KEY
+    }       
+    
